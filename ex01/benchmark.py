@@ -1,4 +1,19 @@
+#!/usr/bin/env python3
+
 import timeit
+
+def loop(emails):
+    gmails_loop = []
+
+    for email in emails:
+        if "@gmail.com" in email:
+            gmails_loop.append(email)
+
+def comprehension(emails):
+    [email for email in emails]
+
+def m(emails):
+    list(map(lambda email: email if "@gmail.com" in email else None, emails))
 
 def main():
     emails = ['john@gmail.com', 'james@gmail.com', 'alice@yahoo.com', 'anna@live.com', 'philipp@gmail.com',
@@ -7,18 +22,11 @@ def main():
                 'john@gmail.com', 'james@gmail.com', 'alice@yahoo.com', 'anna@live.com', 'philipp@gmail.com',
                 'john@gmail.com', 'james@gmail.com', 'alice@yahoo.com', 'anna@live.com', 'philipp@gmail.com']
 
-    loop = f"""gmails_loop = []
-for email in {emails}:
-    if "@gmail.com" in email:
-        gmails_loop.append(email)"""
+    number_of_calls = 90000000
 
-    comprehension = f"[email for email in {emails}]"
-
-    m = f'list(map(lambda email: email if "@gmail.com" in email else None, {emails}))'
-
-    loop_time = timeit.timeit(stmt=loop, number=90000000)
-    comprehension_time = timeit.timeit(stmt=comprehension, number=90000000)
-    map_time = timeit.timeit(stmt=m, number=90000000)
+    loop_time = timeit.timeit(stmt=f"loop({emails})", setup="from __main__ import loop", number=number_of_calls)
+    comprehension_time = timeit.timeit(stmt=f"comprehension({emails})", setup="from __main__ import comprehension", number=number_of_calls)
+    map_time = timeit.timeit(stmt=f'm({emails})', setup="from __main__ import m", number=number_of_calls)
 
     tl = [loop_time, comprehension_time, map_time]
 
